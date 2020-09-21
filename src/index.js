@@ -1,6 +1,5 @@
 // @flow
 import React, { useEffect, useRef, useState } from 'react'
-import InfiniteScroll from 'react-infinite-scroller'
 import styles from './index.module.css'
 import SearchForm from './components/SearchForm/SearchForm'
 import ImageItem from './components/ImageItem/ImageItem'
@@ -101,6 +100,25 @@ const ReactGiphySearchBox = ({
     }
   }, [debouncedQuery])
 
+  function onScroll() {
+    const scrollableDiv = document.querySelector('#scrollableDiv')
+    if (!scrollableDiv) return
+    // console.log(
+    //   scrollableDiv.scrollTop,
+    //   scrollableDiv.clientHeight,
+    //   scrollableDiv.scrollHeight,
+    // )
+    if (
+      scrollableDiv.scrollTop + scrollableDiv.clientHeight >=
+      scrollableDiv.scrollHeight
+    ) {
+      // console.log('load more!')
+      if (!loading && !lastPage) {
+        fetchImages(apiUrl(data.length), true)
+      }
+    }
+  }
+
   return (
     <div
       className={`${styles.componentWrapper}${
@@ -118,6 +136,9 @@ const ReactGiphySearchBox = ({
       />
 
       <div
+        // eslint-disable-next-line no-return-assign
+        id="scrollableDiv"
+        onScroll={onScroll}
         className={`${styles.listWrapper}${
           listWrapperClassName ? ` ${listWrapperClassName}` : ''
         }`}
@@ -132,39 +153,20 @@ const ReactGiphySearchBox = ({
 
         <Spinner show={loading} message={messageLoading} image={loadingImage} />
 
-        <InfiniteScroll
-          pageStart={0}
-          loadMore={page => fetchImages(apiUrl(page * gifPerPage), true)}
-          hasMore={!loading && !lastPage}
-          useWindow={false}
-          initialLoad={false}
-          loader={
-            !firstRun && (
-              <div key="loading">
-                <Spinner
-                  show={loading}
-                  message={messageLoading}
-                  image={loadingImage}
-                />
-              </div>
-            )
-          }
-        >
-          {data.length > 0 && (
-            <MasonryLayout sizes={masonryConfig}>
-              {data.map(item => (
-                <ImageItem
-                  item={item}
-                  size={masonryConfigMatchMedia.imageWidth}
-                  key={item.id}
-                  listItemClassName={listItemClassName}
-                  onSelect={onSelect}
-                  backgroundColor={imageBackgroundColor}
-                />
-              ))}
-            </MasonryLayout>
-          )}
-        </InfiniteScroll>
+        {data.length > 0 && (
+          <MasonryLayout sizes={masonryConfig}>
+            {data.map(item => (
+              <ImageItem
+                item={item}
+                size={masonryConfigMatchMedia.imageWidth}
+                key={item.id}
+                listItemClassName={listItemClassName}
+                onSelect={onSelect}
+                backgroundColor={imageBackgroundColor}
+              />
+            ))}
+          </MasonryLayout>
+        )}
       </div>
       {poweredByGiphy && <PoweredByGiphy image={poweredByGiphyImage} />}
     </div>
@@ -189,7 +191,7 @@ ReactGiphySearchBox.defaultProps = {
   rating: 'g',
   searchFormClassName: '',
   wrapperClassName: '',
-  searchPlaceholder: 'Search for GIFs',
+  searchPlaceholder: 'Search for GIFs..',
 }
 
 export default ReactGiphySearchBox

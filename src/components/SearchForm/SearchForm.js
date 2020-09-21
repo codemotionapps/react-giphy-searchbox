@@ -28,6 +28,8 @@ const SearchForm = ({
     <input
       data-testid="SearchFormInput"
       type="text"
+      // eslint-disable-next-line jsx-a11y/no-autofocus
+      autoFocus
       placeholder={placeholder}
       onChange={setValue}
       value={value}
