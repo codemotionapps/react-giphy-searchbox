@@ -67,6 +67,10 @@ var ReactGiphySearchBox = function ReactGiphySearchBox(_ref) {
   var isFirstRun = useRef(true);
   useEffect(function () {
     fetchImages(apiUrl(0));
+  }, [library]);
+
+  useEffect(function () {
+    fetchImages(apiUrl(0));
     onSearch(query);
 
     if (isFirstRun.current) {

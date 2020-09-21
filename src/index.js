@@ -92,6 +92,10 @@ const ReactGiphySearchBox = ({
   const isFirstRun = useRef(true)
   useEffect(() => {
     fetchImages(apiUrl(0))
+  }, [library])
+
+  useEffect(() => {
+    fetchImages(apiUrl(0))
     onSearch(query)
 
     if (isFirstRun.current) {

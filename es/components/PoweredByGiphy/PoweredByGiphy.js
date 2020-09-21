@@ -5,7 +5,7 @@ var PoweredByGiphy = function PoweredByGiphy(_ref) {
   var image = _ref.image;
   return React.createElement(
     'div',
-    { className: styles.poweredByGiphy },
+    { className: 'powered-by-giphy' },
     React.createElement('img', { src: image, alt: 'Powered by Giphy', 'data-testid': 'PoweredByGiphy' })
   );
 };
